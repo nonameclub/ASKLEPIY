@@ -99,10 +99,14 @@ END;
 
 Процедура для отчета FastReport
 ```sql
+CREATE PROCEDURE GetTransactionsByDate(@SelectedDate DATETIME)
+    AS
+BEGIN
 SELECT Transactions.TransactionID, Transactions.TransactionDate, Transactions.TransactionType, Transactions.Quantity,
-Products.ProductName 
-FROM Transactions 
-LEFT JOIN Products ON Transactions.ProductID = Products.ProductID 
-WHERE Transactions.TransactionDate <= :SelectedDate 
+       Products.ProductName
+FROM Transactions
+         LEFT JOIN Products ON Transactions.ProductID = Products.ProductID
+WHERE Transactions.TransactionDate <= @SelectedDate
 ORDER BY Transactions.TransactionID
+END
 ``` 
