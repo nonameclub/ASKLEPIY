@@ -1,0 +1,44 @@
+CREATE TABLE Transactions (
+  TransactionID INT IDENTITY(1,1) PRIMARY KEY,
+  ProductID INT,
+  TransactionType VARCHAR(10),
+  TransactionDate DATE,
+  Quantity INT,
+  FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+)
+
+CREATE TABLE Products (
+  ProductID INT IDENTITY(1,1) PRIMARY KEY,
+  ProductName VARCHAR(50),
+  Quantity INT
+)
+
+CREATE TRIGGER [dbo].[trg_Transactions_UpdateProductQuantity] 
+ON [dbo].[Transactions] 
+AFTER INSERT 
+AS 
+BEGIN
+    IF @@ROWCOUNT = 0
+        RETURN;
+
+    DECLARE @ProductID INT, @Quantity INT, @TransactionType NVARCHAR(10);
+    
+    SELECT @ProductID = i.ProductID, @Quantity = i.Quantity, @TransactionType = i.TransactionType
+    FROM inserted i;
+
+    IF @TransactionType = 'Income'
+        UPDATE Products SET Quantity = Quantity + @Quantity WHERE ProductID = @ProductID;
+    ELSE IF @TransactionType = 'Expense'
+        UPDATE Products SET Quantity = Quantity - @Quantity WHERE ProductID = @ProductID;
+END;
+
+CREATE TRIGGER tr_UpdateRealQuantity
+ON Transactions
+INSTEAD OF INSERT
+AS
+BEGIN
+    INSERT INTO Transactions (TransactionID, ProductID, TransactionDate, TransactionType, Quantity, RealQuantity)
+    SELECT i.TransactionID, i.ProductID, i.TransactionDate, i.TransactionType, i.Quantity, p.Quantity
+    FROM inserted i
+    INNER JOIN Products p ON i.ProductID = p.ProductID
+END

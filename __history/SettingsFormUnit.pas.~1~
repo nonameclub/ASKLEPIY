@@ -1,0 +1,33 @@
+unit SettingsFormUnit;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+
+type
+  TSettingsForm = class(TForm)
+    txtDatabaseName: TEdit;
+    txtServer: TEdit;
+    lblServerName: TLabel;
+    lblDatabaseName: TLabel;
+    lblUsername: TLabel;
+    txtUsername: TEdit;
+    lblPassword: TLabel;
+    txtPassword: TEdit;
+    btnSave: TButton;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  SettingsForm: TSettingsForm;
+
+implementation
+
+{$R *.dfm}
+
+end.
