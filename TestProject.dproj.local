@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.882,F:\Projects\TestProject2\Unit1.pas=F:\Projects\TestProject2\AddProductFormUnit.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.875,=F:\Projects\TestProject2\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.388,C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.dfm=E:\Projects\Delphi\TestProject\MainFormUnit.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.562,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.258,F:\Projects\TestProject2\Unit1.pas=F:\Projects\TestProject2\ProjectModulesUnit.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.258,F:\Projects\TestProject2\ProjectModulesUnit.pas=F:\Projects\TestProject2\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.882,F:\Projects\TestProject2\AddProductFormUnit.dfm=F:\Projects\TestProject2\Unit1.dfm</Transaction>
     <Transaction>1899.12.30 00:00:00.000.203,=F:\Projects\TestProject2\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.516,C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit2.pas=E:\Projects\Delphi\TestProject\SettingsFormUnit.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.643,C:\Users\User\Documents\Embarcadero\Studio\Projects\Project1.dproj=E:\Projects\Delphi\TestProject\TestProject.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.258,F:\Projects\TestProject2\ProjectModulesUnit.dfm=F:\Projects\TestProject2\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.516,E:\Projects\Delphi\TestProject\SettingsFormUnit.dfm=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit2.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.388,E:\Projects\Delphi\TestProject\MainFormUnit.pas=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.562,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.882,F:\Projects\TestProject2\AddProductFormUnit.pas=F:\Projects\TestProject2\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.643,E:\Projects\Delphi\TestProject\TestProject.dproj=C:\Users\User\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.516,E:\Projects\Delphi\TestProject\SettingsFormUnit.pas=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.388,E:\Projects\Delphi\TestProject\MainFormUnit.dfm=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
     <Transaction>1899.12.30 00:00:00.000.806,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.388,C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.pas=E:\Projects\Delphi\TestProject\MainFormUnit.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.516,C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit2.dfm=E:\Projects\Delphi\TestProject\SettingsFormUnit.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.258,F:\Projects\TestProject2\Unit1.dfm=F:\Projects\TestProject2\ProjectModulesUnit.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.882,F:\Projects\TestProject2\Unit1.dfm=F:\Projects\TestProject2\AddProductFormUnit.dfm</Transaction>
-    <Transaction>2023.03.31 09:44:15.061,=E:\Projects\TestProject2\Unit1.pas</Transaction>
-    <Transaction>2023.03.31 10:04:17.650,E:\Projects\TestProject2\TransactionFormUnit.pas=E:\Projects\TestProject2\Unit1.pas</Transaction>
-    <Transaction>2023.03.31 10:04:17.650,E:\Projects\TestProject2\TransactionFormUnit.dfm=E:\Projects\TestProject2\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.650,E:\Projects\TestProject2\Unit1.dfm=E:\Projects\TestProject2\TransactionFormUnit.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.875,=F:\Projects\TestProject2\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.061,=E:\Projects\TestProject2\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.650,E:\Projects\TestProject2\Unit1.pas=E:\Projects\TestProject2\TransactionFormUnit.pas</Transaction>
   </Transactions>
 </BorlandProject>

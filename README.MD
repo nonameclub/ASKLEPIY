@@ -21,8 +21,16 @@
 
 ## Таблицы, Триггери, Процедуры
 
-Таблица транзакции(Для хранение Приход/Расход)
+Таблица Продуктов
+```sql
+CREATE TABLE Products (
+  ProductID INT IDENTITY(1,1) PRIMARY KEY,
+  ProductName VARCHAR(50),
+  Quantity INT
+)
+```
 
+Таблица транзакции(Для хранение Приход/Расход)
 ```sql
 CREATE TABLE Transactions (
 TransactionID INT IDENTITY(1,1) PRIMARY KEY,
@@ -31,15 +39,6 @@ TransactionType VARCHAR(10),
 TransactionDate DATE,
 Quantity INT,
 FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
-)
-```
-
-Таблица Продуктов
-```sql
-CREATE TABLE Products (
-  ProductID INT IDENTITY(1,1) PRIMARY KEY,
-  ProductName VARCHAR(50),
-  Quantity INT
 )
 ```
 
