@@ -18,8 +18,6 @@
 
 [Демо](https://user-images.githubusercontent.com/15018727/229076439-54ee42fc-28c6-47ee-b6de-2df46c11fb16.mp4)
 
-[Демо](https://user-images.githubusercontent.com/15018727/229076439-54ee42fc-28c6-47ee-b6de-2df46c11fb16.mp4)
-
 ## Таблицы, Триггери, Процедуры
 
 Таблица транзакции(Для хранение Приход/Расход)
