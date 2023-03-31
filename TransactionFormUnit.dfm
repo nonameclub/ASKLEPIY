@@ -46,8 +46,8 @@ object frmTransaction: TfrmTransaction
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    ExplicitLeft = 8
-    ExplicitTop = 8
+    ExplicitWidth = 132
+    ExplicitHeight = 23
   end
   object lblResidue: TLabel
     Left = 220

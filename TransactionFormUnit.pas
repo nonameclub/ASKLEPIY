@@ -52,7 +52,7 @@ begin
 
    if txtQuantity.Text <> '' then
     begin
-      if (transactionType = 'Expense') AND (FResidue <= StrToInt(txtQuantity.Text)) then
+      if (transactionType = 'Expense') AND (FResidue < StrToInt(txtQuantity.Text)) then
         ShowMessage('Колчичество дольжен быть менщее чем остаток')
        else begin
           commandAdd.CommandText := 'INSERT INTO Transactions (ProductID,TransactionType,TransactionDate,Quantity) VALUES (:ProductID, :TransactionType, :TransactionDate, :Quantity)';
