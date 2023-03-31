@@ -1,0 +1,32 @@
+unit ProjectModulesUnit;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Data.DB, Data.Win.ADODB;
+
+type
+  TMyDataModule = class(TDataModule)
+    dbConnection: TADOConnection;
+  private
+    { Private declarations }
+  public
+    property ADOConnection: TADOConnection read dbConnection;
+    procedure SetConnectionString(AConnectionString: string);
+  end;
+
+var
+  MyDataModule: TMyDataModule;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+
+{$R *.dfm}
+
+procedure TMyDataModule.SetConnectionString(AConnectionString: string);
+begin
+  AdoConnection.ConnectionString := AConnectionString;
+end;
+
+end.

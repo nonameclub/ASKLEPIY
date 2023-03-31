@@ -1,7 +1,28 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<TfrxReport Version="2022.2.10" DotMatrixReport="False" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="167935" PreviewOptions.Zoom="1" PrintOptions.Printer="Default" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="45015,7417712384" ReportOptions.Description.Text="" ReportOptions.LastChange="45015,7426527778" ScriptLanguage="PascalScript" ScriptText.Text="&#13;&#10;begin&#13;&#10;&#13;&#10;end.">
+<TfrxReport Version="2022.2.10" DotMatrixReport="False" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="167935" PreviewOptions.Zoom="1" PrintOptions.Printer="Default" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="45015,8082218518" ReportOptions.Description.Text="" ReportOptions.LastChange="45015,9414918981" ScriptLanguage="PascalScript" ScriptText.Text="&#13;&#10;begin&#13;&#10;&#13;&#10;end.">
+  <Datasets>
+    <item DataSet="frxDataSet" DataSetName="frxDBDataset1"/>
+  </Datasets>
   <TfrxDataPage Name="Data" HGuides.Text="" VGuides.Text="" Height="1000" Left="0" Top="0" Width="1000"/>
-  <TfrxReportPage Name="TransactionsPage" HGuides.Text="" VGuides.Text="" PaperWidth="210" PaperHeight="297" PaperSize="9" LeftMargin="10" RightMargin="10" TopMargin="10" BottomMargin="10" ColumnWidth="0" ColumnPositions.Text="" Frame.Typ="0" MirrorMode="0">
-    <TfrxReportTitle Name="Transactions" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="0" Height="22,67718" Left="0" Top="18,89765" Width="718,1107"/>
+  <TfrxReportPage Name="Page1" HGuides.Text="" VGuides.Text="" PaperWidth="210" PaperHeight="297" PaperSize="9" LeftMargin="10" RightMargin="10" TopMargin="10" BottomMargin="10" ColumnWidth="0" ColumnPositions.Text="" Frame.Typ="0" MirrorMode="0">
+    <TfrxMemoView Name="Memo1" AllowVectorExport="True" Left="7,55906" Top="1024,25263" Width="219,21274" Height="18,89765" Frame.Typ="0" Text="Powered by Doston Rakhmatov"/>
+    <TfrxReportTitle Name="Transactions" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="0" Height="83,14966" Left="0" Top="18,89765" Width="718,1107">
+      <TfrxMemoView Name="Title" AllowVectorExport="True" Left="272,12616" Top="3,77953" Width="132,28355" Height="26,45671" Font.Charset="1" Font.Color="0" Font.Height="-21" Font.Name="Arial" Font.Style="0" Frame.Typ="0" ParentFont="False" Text="Транзакции"/>
+      <TfrxMemoView Name="SelectedDate" AllowVectorExport="True" Left="442,20501" Top="37,7953" Width="317,48052" Height="26,45671" Font.Charset="1" Font.Color="0" Font.Height="-15" Font.Name="Arial" Font.Style="0" Frame.Typ="0" ParentFont="False" Text="Дата создание отчета -  [Date]"/>
+    </TfrxReportTitle>
+    <TfrxMasterData Name="DataTransactions" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="1" FillGap.Right="0" Frame.Typ="0" Height="30,23624" Left="0" Top="215,43321" Width="718,1107" ColumnWidth="0" ColumnGap="0" DataSet="frxDataSet" DataSetName="frxDBDataset1" RowCount="0">
+      <TfrxMemoView Name="RowName" AllowVectorExport="True" Left="109,60637" Top="3,77953" Width="124,72449" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="[frxDBDataset1.&#34;ProductName&#34;]"/>
+      <TfrxMemoView Name="RowID" AllowVectorExport="True" Left="7,55906" Top="3,77953" Width="64,25201" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="[frxDBDataset1.&#34;TransactionID&#34;]"/>
+      <TfrxMemoView Name="Memo4" AllowVectorExport="True" Left="287,24428" Top="3,77953" Width="94,48825" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="[frxDBDataset1.&#34;TransactionType&#34;]"/>
+      <TfrxMemoView Name="RowDate" AllowVectorExport="True" Left="453,5436" Top="3,77953" Width="94,48825" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="[frxDBDataset1.&#34;TransactionDate&#34;]"/>
+      <TfrxMemoView Name="RowQuantity" AllowVectorExport="True" Left="585,82715" Top="3,77953" Width="102,04731" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="[frxDBDataset1.&#34;Quantity&#34;]"/>
+    </TfrxMasterData>
+    <TfrxColumnHeader Name="ColumnTransactions" FillType="ftBrush" Fill.BackColor="-16777194" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Style="fsDot" Frame.Typ="0" Height="30,23624" Left="0" Top="124,72449" Width="718,1107">
+      <TfrxMemoView Name="ColumnID" AllowVectorExport="True" Left="7,55906" Top="3,77953" Width="64,25201" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-16" Font.Name="Arial" Font.Style="1" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="ID"/>
+      <TfrxMemoView Name="ColumnName" AllowVectorExport="True" Left="109,60637" Top="3,77953" Width="124,72449" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-16" Font.Name="Arial" Font.Style="1" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="Наиманование"/>
+      <TfrxMemoView Name="ColumnType" AllowVectorExport="True" Left="287,24428" Top="3,77953" Width="94,48825" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-16" Font.Name="Arial" Font.Style="1" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="Тип"/>
+      <TfrxMemoView Name="ColumnDate" AllowVectorExport="True" Left="453,5436" Top="3,77953" Width="94,48825" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-16" Font.Name="Arial" Font.Style="1" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="Дата"/>
+      <TfrxMemoView Name="ColumnQuantity" AllowVectorExport="True" Left="585,82715" Top="3,77953" Width="102,04731" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-16" Font.Name="Arial" Font.Style="1" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="Количество"/>
+    </TfrxColumnHeader>
   </TfrxReportPage>
 </TfrxReport>

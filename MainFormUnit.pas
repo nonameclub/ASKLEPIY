@@ -5,34 +5,36 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.ImageList, Vcl.ImgList,
-  Vcl.StdCtrls, Data.DB, Data.Win.ADODB, SettingsFormUnit, Registry,
+  Vcl.StdCtrls, Data.DB, Data.Win.ADODB, SettingsFormUnit, Registry, AddProductFormUnit,
   DBGridEhGrouping, ToolCtrlsEh, DBGridEhToolCtrls, DynVarsEh, EhLibVCL,
-  GridsEh, DBAxisGridsEh, DBGridEh, Vcl.ComCtrls, frxClass, FireDAC.Comp.Client,
-  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf,
-  FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async,
-  FireDAC.Phys, FireDAC.Phys.MSSQL, FireDAC.Phys.MSSQLDef, FireDAC.VCLUI.Wait, FireDAC.DApt,
-  frxDBSet, FireDAC.Phys.IB, FireDAC.Phys.IBDef,frxDesgn;
+  GridsEh, DBAxisGridsEh, DBGridEh, Vcl.ComCtrls, frxClass, frxDBSet, frxDesgn, DateUtils, ProjectModulesUnit, TransactionFormUnit;
 
 type
   TfrmMain = class(TForm)
-    dbConnection: TADOConnection;
     btnSettingsFrm: TButton;
     dbGrid: TDBGridEh;
     dsProducts: TDataSource;
     queryProducts: TADOQuery;
     btnAddProduct: TButton;
-    btnTransaction: TButton;
     dtReportDate: TDateTimePicker;
     btnReport: TButton;
-    reportTransaction: TfrxReport;
+    frxReport1: TfrxReport;
+    frxDataSet: TfrxDBDataset;
+    queryReport: TADOQuery;
     procedure btnSettingsFrmClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure dtReportDateChange(Sender: TObject);
     procedure btnReportClick(Sender: TObject);
+    procedure btnAddProductClick(Sender: TObject);
+    procedure dbGridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure dbGridKeyPress(Sender: TObject; var Key: Char);
+    procedure dbGridDblClick(Sender: TObject);
+
   private
-    { Private declarations }
+    FDataModule: TMyDataModule;
   public
-    { Public declarations }
+    property DataModule: TMyDataModule read FDataModule write FDataModule;
+    procedure RefreshTable;
   end;
 
 var
@@ -42,32 +44,52 @@ implementation
 
 {$R *.dfm}
 
-procedure TfrmMain.btnReportClick(Sender: TObject);
+procedure TfrmMain.btnAddProductClick(Sender: TObject);
 var
-  Query: TADOQuery;
-  DataSet: TfrxDBDataset;
+  AddProductForm: TAddProductForm;
 begin
+  AddProductForm := TAddProductForm.Create(nil);
+  AddProductForm.Left := (AddProductForm.Monitor.Width  - AddProductForm.Width)  div 2;
+  AddProductForm.Top  := (AddProductForm.Monitor.Height - AddProductForm.Height) div 2;
   try
-    reportTransaction.LoadFromFile('Report.fr3');
-    Query := TADOQuery.Create(nil);
-    Query.Connection := dbConnection; // set the ADOConnection component
-    Query.SQL.Text := 'SELECT Transactions.TransactionID, Transactions.TransactionDate, Transactions.TransactionType, Transactions.Quantity, ' +
-      'Products.ProductName ' +
-      'FROM Transactions ' +
-      'LEFT JOIN Products ON Transactions.ProductID = Products.ProductID ' +
-      'WHERE Transactions.TransactionDate <= :SelectedDate ' +
-      'ORDER BY Transactions.TransactionID';
-//    Query.Parameters.ParamByName('SelectedDate').Value := FormatDateTime('yyyy-mm-dd', dtReportDate.Date); // set the selected date parameter
-    Query.Open;
-    DataSet := TfrxDBDataset.Create(nil);
-    DataSet.DataSet := Query;
-    reportTransaction.Variables['TransactionDate'] := dtReportDate.Date; // set the selected date parameter for the report
-    reportTransaction.DataSets.Add(DataSet);
-    DataSet.Open;
-    reportTransaction.ShowReport;
+    if AddProductForm.ShowModal = mrOK then
+      begin
+        RefreshTable;
+      end;
   finally
-    Query.Free;
-    reportTransaction.Free;
+    AddProductForm.Free;
+  end;
+end;
+
+procedure TfrmMain.RefreshTable;
+begin
+  queryProducts.SQL.Text :=
+            'SELECT Products.ProductID, Products.ProductName, ' +
+            'COALESCE(SUM(CASE WHEN Transactions.TransactionType = ''Income'' THEN Transactions.Quantity ELSE -Transactions.Quantity END), 0) AS Quantity ' +
+            'FROM Products ' +
+            'LEFT JOIN Transactions ON Products.ProductID = Transactions.ProductID AND Transactions.TransactionDate <= :SelectedDate ' +
+            'GROUP BY Products.ProductID, Products.ProductName, Products.Quantity';
+  queryProducts.Parameters.ParamByName('SelectedDate').Value := FormatDateTime('yyyy-mm-dd', dtReportDate.Date);
+  queryProducts.Open;
+end;
+
+procedure TfrmMain.btnReportClick(Sender: TObject);
+begin
+  frxReport1 := TfrxReport.Create(nil); // create the report object
+  try
+    frxReport1.LoadFromFile('Report.fr3');
+    queryReport.SQL.Text := 'EXEC GetTransactionsByDate :SelectedDate';
+    queryReport.Parameters.ParamByName('SelectedDate').Value := datetostr(dtReportDate.Date); // set the selected date parameter
+    queryReport.Open;
+    //frxDataSet := TfrxDBDataset.Create(nil);
+    frxDataSet.DataSet := queryReport;
+    frxDataSet.Open;
+    frxReport1.Variables['SelectedDate'] := FormatDateTime('dd.mm.yyyy', dtReportDate.Date); // set the selected date parameter for the report
+    frxReport1.DataSets.Add(frxDataSet);
+    frxReport1.ShowReport;
+  finally
+    //queryReport.Free;
+    //frxReport1.Free; // explicitly free the report object after it has been shown
   end;
 end;
 
@@ -76,16 +98,56 @@ begin
   frmSettings.ShowModal;
 end;
 
+procedure TfrmMain.dbGridDblClick(Sender: TObject);
+var
+  ProductID: Integer;
+  TransactionForm: TfrmTransaction;
+begin
+  if not dbGrid.DataSource.DataSet.IsEmpty then
+  begin
+    ProductID := dbGrid.DataSource.DataSet.FieldByName('ProductID').AsInteger;
+    TransactionForm := TfrmTransaction.Create(nil);
+    TransactionForm.Left := (TransactionForm.Monitor.Width  - TransactionForm.Width)  div 2;
+    TransactionForm.Top  := (TransactionForm.Monitor.Height - TransactionForm.Height) div 2;
+    try
+      TransactionForm.SetProductID(ProductID); // pass the ProductID to the new form
+      if TransactionForm.ShowModal = mrOK then
+      begin
+        RefreshTable;
+      end;
+    finally
+      TransactionForm.Free;
+    end;
+  end;
+end;
+
+procedure TfrmMain.dbGridKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_DELETE) and (Shift = []) then
+  begin
+    if MessageDlg('Вы хотите удалить запись?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      dbGrid.DataSource.DataSet.Delete;
+    Key := 0; // Prevent the default action of the Delete key
+  end;
+end;
+
+procedure TfrmMain.dbGridKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = #13 then // Check if the Enter key was pressed
+    begin
+      if dbGrid.DataSource.State in [dsInsert, dsEdit] then // Check if the dataset is in insert or edit mode
+         begin
+          dbGrid.DataSource.DataSet.Post; // Save changes to the database
+          dbGrid.DataSource.DataSet.Refresh; // Refresh the dataset to reflect the changes
+         end;
+      Key := #0; // Set the key to 0 to prevent the default Enter key behavior
+    end;
+end;
+
 procedure TfrmMain.dtReportDateChange(Sender: TObject);
 begin
-  queryProducts.SQL.Text :=
-      'SELECT Products.ProductID, Products.ProductName, ' +
-      'COALESCE(SUM(CASE WHEN Transactions.TransactionType = ''Income'' THEN Transactions.Quantity ELSE -Transactions.Quantity END), 0) AS Quantity ' +
-      'FROM Products ' +
-      'LEFT JOIN Transactions ON Products.ProductID = Transactions.ProductID AND Transactions.TransactionDate <= :SelectedDate ' +
-      'GROUP BY Products.ProductID, Products.ProductName, Products.Quantity';
-  queryProducts.Parameters.ParamByName('SelectedDate').Value := FormatDateTime('yyyy-mm-dd', dtReportDate.Date);
-  queryProducts.Open;
+  RefreshTable;
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
@@ -95,6 +157,7 @@ var
 begin
   Reg := TRegistry.Create;
   frmMain.Constraints.MinWidth := 620;
+  dtReportDate.Date := DateOf(Now);
   //Код для центр форм
   frmMain.Left := (frmMain.Monitor.Width  - frmMain.Width)  div 2;
   frmMain.Top  := (frmMain.Monitor.Height - frmMain.Height) div 2;
@@ -114,16 +177,16 @@ begin
   end;
 
   try
-    ConnectionString := 'Provider=SQLOLEDB.1' +
+    connectionString := 'Provider=SQLOLEDB.1' +
           ';Data Source=' + serverName +
           ';Initial Catalog=' + databaseName +
           ';User ID=' + userName +
           ';Password=' + password + ';Persist Security Info=False;';
-
     //Настроим подключение к базу данных
-    dbConnection.ConnectionString := connectionString;
-    dbConnection.LoginPrompt := False;
-    dbConnection.Connected := True;
+    inherited;
+    MyDataModule := TMyDataModule.Create(Self);
+    MyDataModule.SetConnectionString(connectionString);
+
 
     dbGrid.AutoFitColWidths := True;
 
@@ -134,17 +197,7 @@ begin
     end;
   end;
 
-  queryProducts.SQL.Text :=
-      'SELECT Products.ProductID, Products.ProductName, ' +
-      'COALESCE(SUM(CASE WHEN Transactions.TransactionType = ''Income'' THEN Transactions.Quantity ELSE -Transactions.Quantity END), 0) AS Quantity ' +
-      'FROM Products ' +
-      'LEFT JOIN Transactions ON Products.ProductID = Transactions.ProductID AND Transactions.TransactionDate <= :SelectedDate ' +
-      'GROUP BY Products.ProductID, Products.ProductName, Products.Quantity';
-  queryProducts.Parameters.ParamByName('SelectedDate').Value := FormatDateTime('yyyy-mm-dd', dtReportDate.Date);
-  queryProducts.Open;
-
-  //Настраиваем полей таблицу
-
+  RefreshTable;
 end;
 
 end.

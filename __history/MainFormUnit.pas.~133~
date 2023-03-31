@@ -1,0 +1,158 @@
+unit MainFormUnit;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.ImageList, Vcl.ImgList,
+  Vcl.StdCtrls, Data.DB, Data.Win.ADODB, SettingsFormUnit, Registry, AddProductFormUnit,
+  DBGridEhGrouping, ToolCtrlsEh, DBGridEhToolCtrls, DynVarsEh, EhLibVCL,
+  GridsEh, DBAxisGridsEh, DBGridEh, Vcl.ComCtrls, frxClass, frxDBSet, frxDesgn, DateUtils, ProjectModulesUnit;
+
+type
+  TfrmMain = class(TForm)
+    btnSettingsFrm: TButton;
+    dbGrid: TDBGridEh;
+    dsProducts: TDataSource;
+    queryProducts: TADOQuery;
+    btnAddProduct: TButton;
+    btnTransaction: TButton;
+    dtReportDate: TDateTimePicker;
+    btnReport: TButton;
+    frxReport1: TfrxReport;
+    frxDataSet: TfrxDBDataset;
+    queryReport: TADOQuery;
+    procedure btnSettingsFrmClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure dtReportDateChange(Sender: TObject);
+    procedure btnReportClick(Sender: TObject);
+    procedure btnAddProductClick(Sender: TObject);
+  private
+    FDataModule: TMyDataModule;
+  public
+    property DataModule: TMyDataModule read FDataModule write FDataModule;
+    procedure RefreshTable;
+  end;
+
+var
+  frmMain: TfrmMain;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmMain.btnAddProductClick(Sender: TObject);
+var
+  AddProductForm: TAddProductForm;
+begin
+  AddProductForm := TAddProductForm.Create(nil);
+  AddProductForm.Left := (AddProductForm.Monitor.Width  - AddProductForm.Width)  div 2;
+  AddProductForm.Top  := (AddProductForm.Monitor.Height - AddProductForm.Height) div 2;
+  try
+    if AddProductForm.ShowModal = mrOK then
+      begin
+        RefreshTable;
+      end;
+  finally
+    AddProductForm.Free;
+  end;
+end;
+
+procedure TfrmMain.RefreshTable;
+begin
+  queryProducts.SQL.Text :=
+            'SELECT Products.ProductID, Products.ProductName, ' +
+            'COALESCE(SUM(CASE WHEN Transactions.TransactionType = ''Income'' THEN Transactions.Quantity ELSE -Transactions.Quantity END), 0) AS Quantity ' +
+            'FROM Products ' +
+            'LEFT JOIN Transactions ON Products.ProductID = Transactions.ProductID AND Transactions.TransactionDate <= :SelectedDate ' +
+            'GROUP BY Products.ProductID, Products.ProductName, Products.Quantity';
+  queryProducts.Parameters.ParamByName('SelectedDate').Value := FormatDateTime('yyyy-mm-dd', dtReportDate.Date);
+  queryProducts.Open;
+end;
+
+procedure TfrmMain.btnReportClick(Sender: TObject);
+begin
+  frxReport1 := TfrxReport.Create(nil); // create the report object
+  try
+    frxReport1.LoadFromFile('Report.fr3');
+    queryReport.SQL.Text := 'SELECT Transactions.TransactionID, Transactions.TransactionDate, Transactions.TransactionType, Transactions.Quantity, ' +
+      'Products.ProductName ' +
+      'FROM Transactions ' +
+      'LEFT JOIN Products ON Transactions.ProductID = Products.ProductID ' +
+      'WHERE Transactions.TransactionDate <= :SelectedDate ' +
+      'ORDER BY Transactions.TransactionID';
+    queryReport.Parameters.ParamByName('SelectedDate').Value := datetostr(dtReportDate.Date); // set the selected date parameter
+    queryReport.Open;
+    //frxDataSet := TfrxDBDataset.Create(nil);
+    frxDataSet.DataSet := queryReport;
+    frxDataSet.Open;
+    frxReport1.Variables['SelectedDate'] := FormatDateTime('dd.mm.yyyy', dtReportDate.Date); // set the selected date parameter for the report
+    frxReport1.DataSets.Add(frxDataSet);
+    frxReport1.ShowReport;
+  finally
+    queryReport.Free;
+    frxReport1.Free; // explicitly free the report object after it has been shown
+  end;
+end;
+
+procedure TfrmMain.btnSettingsFrmClick(Sender: TObject);
+begin
+  frmSettings.ShowModal;
+end;
+
+procedure TfrmMain.dtReportDateChange(Sender: TObject);
+begin
+  RefreshTable;
+end;
+
+procedure TfrmMain.FormCreate(Sender: TObject);
+var
+  Reg: TRegistry;
+  userName, databaseName, password, serverName, connectionString: string;
+begin
+  Reg := TRegistry.Create;
+  frmMain.Constraints.MinWidth := 620;
+  dtReportDate.Date := DateOf(Now);
+  //Код для центр форм
+  frmMain.Left := (frmMain.Monitor.Width  - frmMain.Width)  div 2;
+  frmMain.Top  := (frmMain.Monitor.Height - frmMain.Height) div 2;
+
+  //Получаем конфигурации базу данных из Реестр
+  try
+    Reg.RootKey := HKEY_CURRENT_USER;
+    if Reg.OpenKey('Software\ASKLEPIY', False) then
+    begin
+      serverName := Reg.ReadString('Server');
+      databaseName := Reg.ReadString('DatabaseName');
+      userName := Reg.ReadString('Username');
+      password := Reg.ReadString('Password');
+    end;
+  finally
+    Reg.Free;
+  end;
+
+  try
+    connectionString := 'Provider=SQLOLEDB.1' +
+          ';Data Source=' + serverName +
+          ';Initial Catalog=' + databaseName +
+          ';User ID=' + userName +
+          ';Password=' + password + ';Persist Security Info=False;';
+    //Настроим подключение к базу данных
+    inherited;
+    MyDataModule := TMyDataModule.Create(Self);
+    MyDataModule.SetConnectionString(connectionString);
+
+
+    dbGrid.AutoFitColWidths := True;
+
+  except
+    on E: Exception do
+    begin
+      MessageDlg('Ошибка подключения к базе данных!, ' + E.Message, mtWarning, [mbOK], 0);
+    end;
+  end;
+
+  RefreshTable;
+end;
+
+end.

@@ -1,0 +1,11 @@
+object projectModules: TprojectModules
+  OldCreateOrder = False
+  Height = 150
+  Width = 215
+  object dbConnection: TADOConnection
+    LoginPrompt = False
+    Provider = 'SQLNCLI11'
+    Left = 24
+    Top = 16
+  end
+end

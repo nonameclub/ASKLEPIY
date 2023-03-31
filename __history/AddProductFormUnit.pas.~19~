@@ -1,0 +1,51 @@
+unit AddProductFormUnit;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Data.DB, Data.Win.ADODB, ProjectModulesUnit;
+
+type
+  TAddProductForm = class(TForm)
+    txtName: TEdit;
+    lblName: TLabel;
+    btnSave: TButton;
+    queryAdd: TADOQuery;
+    procedure FormCreate(Sender: TObject);
+    procedure btnSaveClick(Sender: TObject);
+  private
+    FDataModule: TMyDataModule;
+  public
+    property DataModule: TMyDataModule read FDataModule write FDataModule;
+  end;
+
+var
+  AddProductForm: TAddProductForm;
+
+implementation
+
+{$R *.dfm}
+
+procedure TAddProductForm.btnSaveClick(Sender: TObject);
+begin
+  try
+    queryAdd.SQL.Text := 'INSERT INTO Products (ProductName, Quantity) VALUES (:ProductName, 0)';
+    queryAdd.Parameters.ParamByName('ProductName').Value := txtName.Text;
+    queryAdd.Open;
+
+    ShowMessage('Product added successfully');
+  finally
+    queryAdd.Free;
+  end;
+  AddProductForm.Close;
+end;
+
+procedure TAddProductForm.FormCreate(Sender: TObject);
+begin
+  //Код для центр форм
+  AddProductForm.Left := (AddProductForm.Monitor.Width  - AddProductForm.Width)  div 2;
+  AddProductForm.Top  := (AddProductForm.Monitor.Height - AddProductForm.Height) div 2;
+end;
+
+end.

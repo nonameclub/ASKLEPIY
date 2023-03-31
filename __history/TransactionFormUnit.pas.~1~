@@ -1,0 +1,27 @@
+unit TransactionFormUnit;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, ProjectModulesUnit, Vcl.StdCtrls,
+  Vcl.DBCtrls;
+
+type
+  TfrmTransaction = class(TForm)
+    lblProduct: TLabel;
+    cmbProducts: TDBComboBox;
+  private
+    FDataModule: TMyDataModule;
+  public
+    property DataModule: TMyDataModule read FDataModule write FDataModule;
+  end;
+
+var
+  frmTransaction: TfrmTransaction;
+
+implementation
+
+{$R *.dfm}
+
+end.
