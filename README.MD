@@ -38,6 +38,7 @@ ProductID INT,
 TransactionType VARCHAR(10),
 TransactionDate DATE,
 Quantity INT,
+RealQuantity INT
 FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
 )
 ```
